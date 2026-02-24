@@ -1,43 +1,515 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LinkedIn Text Formatter</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkedIn Text Formatter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     TOKENS — Dark Theme (default)
+  ═══════════════════════════════════════════ */
+  :root {
+    --teal:  #0e97ad;
+    --sky:   #0ea5e9;
+    --light: #b0cfe5;
+    --navy:  #2a314d;
+    --deep:  #0B162A;
+
+    /* semantic */
+    --bg:        #0B162A;
+    --bg-2:      #1a2235;
+    --bg-3:      #1e2c42;
+    --text:      #e8eef5;
+    --text-muted:#7a91ab;
+    --border:    rgba(176,207,229,0.12);
+    --glow:      rgba(14,151,173,0.18);
+    --accent:    var(--teal);
+    --accent-2:  var(--sky);
+    --input-bg:  #1e2c42;
+    --shadow:    0 4px 24px rgba(0,0,0,0.35);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+    --grid-color:rgba(14,151,173,0.035);
+  }
+
+  /* ═══════════════════════════════════════════
+     TOKENS — Light Theme
+  ═══════════════════════════════════════════ */
+  [data-theme="light"] {
+    --bg:        #f0f5fa;
+    --bg-2:      #ffffff;
+    --bg-3:      #e6eef6;
+    --text:      #1a2235;
+    --text-muted:#5a7490;
+    --border:    rgba(42,49,77,0.12);
+    --glow:      rgba(14,151,173,0.10);
+    --input-bg:  #f0f5fa;
+    --shadow:    0 4px 24px rgba(42,49,77,0.10);
+    --shadow-sm: 0 2px 8px rgba(42,49,77,0.08);
+    --grid-color:transparent;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+    transition: background-image 0.35s;
+  }
+
+  .page { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── transitions for theme switch ── */
+  .card, header, input, textarea, select, .dropzone,
+  .output-area, .table-wrap, .tabs, .tab, .alert,
+  label, .stat, .badge, .status-badge, footer {
+    transition: background 0.3s ease, border-color 0.3s ease,
+                color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* ══════════════════════════════════
+     HEADER
+  ══════════════════════════════════ */
+  header {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow: 0 0 8px var(--teal); }
+    50%      { opacity:.5; box-shadow: 0 0 20px var(--teal); }
+  }
+
+  /* ── Theme Toggle ── */
+  .theme-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .theme-label {
+    font-size: 12px; color: var(--text-muted); font-weight: 500;
+    min-width: 32px;
+    transition: color 0.3s;
+  }
+  .toggle-track {
+    width: 44px; height: 24px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .toggle-track.active {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    border-color: var(--teal);
+  }
+  .toggle-thumb {
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute; top: 2px; left: 2px;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; line-height: 1;
+  }
+  .toggle-track.active .toggle-thumb {
+    transform: translateX(20px);
+  }
+
+  .badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(14,151,173,0.15);
+    border: 1px solid rgba(14,151,173,0.3);
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  /* ══════════════════════════════════
+     MAIN LAYOUT
+  ══════════════════════════════════ */
+  main {
+    max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; width: 100%; flex: 1;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 52px; text-align: center;
+  }
+  .hero-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; line-height: 1.1; color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p { color: var(--text-muted); max-width: 480px; margin: 0 auto; }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.4s ease both;
+    display: flex; flex-direction: column;
+  }
+  .card:hover {
+    border-color: rgba(14,151,173,0.28);
+    box-shadow: 0 0 30px var(--glow), var(--shadow-sm);
+  }
+  .card:nth-child(2) { animation-delay: 0.08s; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(14,151,173,0.15), rgba(14,165,233,0.08));
+    border: 1px solid rgba(14,151,173,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 12px;
+  }
+  .card h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .card p { color: var(--text-muted); font-size: 13.5px; }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 9px 20px; border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    cursor: pointer; border: none;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(14,151,173,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 24px rgba(14,151,173,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--teal); color: var(--teal);
+    background: rgba(14,151,173,0.06);
+  }
+  .btn-secondary.success {
+    border-color: var(--teal); color: var(--teal);
+    background: rgba(14,151,173,0.1);
+  }
+  .btn-secondary.error {
+    border-color: #ef4444; color: #ef4444;
+    background: rgba(239,68,68,0.1);
+  }
+
+  /* ── Form elements ── */
+  .form-group { margin-bottom: 16px; flex: 1; display: flex; flex-direction: column; }
+  label {
+    display: block; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%; flex: 1;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+    resize: vertical; min-height: 240px;
+  }
+  textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14,151,173,0.12);
+  }
+
+  /* ── Output area ── */
+  .output-area {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif; /* Using Inter since it's meant to simulate a post, not code */
+    font-size: 15px; color: var(--text);
+    padding: 20px; min-height: 240px; line-height: 1.6;
+    transition: background 0.3s, border-color 0.3s;
+    white-space: pre-wrap;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .output-toolbar {
+    display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 10px; align-items: center;
+  }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+  
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 24px; text-align: center;
+    font-size: 12px; color: var(--text-muted);
+    width: 100%;
+  }
+
+</style>
 </head>
 <body>
-  <main class="app">
-    <header class="app__header">
-      <h1>LinkedIn Text Formatter</h1>
-      <p>Markdown aus Notion einfügen und direkt die LinkedIn-Darstellung kopieren.</p>
-    </header>
+<div class="page">
 
-    <section class="app__content">
-      <div class="card">
-        <label for="markdownInput">Markdown Eingabe</label>
-        <textarea
-          id="markdownInput"
-          placeholder="Füge deinen Markdown-Text hier ein..."
-          rows="14"
-        ></textarea>
-      </div>
-
-      <div class="card">
-        <div class="card__row">
-          <label for="linkedinOutput">LinkedIn Vorschau</label>
-          <span class="badge">Plain Text</span>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      Wissen &amp; Werkzeug
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="badge">Formatter</div>
+      <!-- Theme Toggle -->
+      <div class="theme-toggle" onclick="toggleTheme()" title="Theme wechseln">
+        <span class="theme-label" id="themeLabel">Hell</span>
+        <div class="toggle-track" id="toggleTrack">
+          <div class="toggle-thumb" id="toggleThumb">☀️</div>
         </div>
-        <div id="linkedinOutput" class="preview" aria-live="polite"></div>
       </div>
-    </section>
+    </div>
+  </div>
+</header>
 
-    <section class="app__actions">
-      <button id="copyButton" type="button">Text kopieren</button>
-      <span id="copyStatus" class="status" role="status" aria-live="polite"></span>
-    </section>
-  </main>
+<main>
 
-  <script src="script.js"></script>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">LinkedIn Text Formatter</div>
+    <h1>Markdown aus Notion einfügen<br>und direkt <span>LinkedIn-Darstellung kopieren</span></h1>
+  </div>
+
+  <div class="grid-2">
+    <!-- INPUT CARD -->
+    <div class="card">
+      <div class="card-icon">✍️</div>
+      <h2>Eingabe</h2>
+      <div class="form-group" style="margin-top:12px;">
+        <label for="markdownInput">Roher Text (Markdown)</label>
+        <textarea id="markdownInput" placeholder="Deinen Markdown-Text hier einfügen...&#10;&#10;Zum Beispiel mit **fettem** Text und *kursiven* Highlights."></textarea>
+      </div>
+    </div>
+
+    <!-- OUTPUT CARD -->
+    <div class="card">
+      <div class="card-icon">📤</div>
+      <h2>Output</h2>
+      <div class="output-toolbar">
+         <span id="copyStatus" style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
+        <button id="copyButton" class="btn btn-secondary" style="padding:7px 16px; font-size:13px;">Kopieren</button>
+      </div>
+      <div id="linkedinOutput" class="output-area"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  LinkedIn Text Formatter · Design by Wissen &amp; Werkzeug
+</footer>
+
+</div>
+
+<script>
+  // --- Theme Toggle ---
+  let isDark = true;
+
+  function toggleTheme() {
+    isDark = !isDark;
+    const html = document.documentElement;
+    const track = document.getElementById('toggleTrack');
+    const thumb = document.getElementById('toggleThumb');
+    const label = document.getElementById('themeLabel');
+
+    if (isDark) {
+      html.setAttribute('data-theme', 'dark');
+      track.classList.add('active');
+      thumb.textContent = '🌙';
+      label.textContent = 'Hell';
+    } else {
+      html.setAttribute('data-theme', 'light');
+      track.classList.remove('active');
+      thumb.textContent = '☀️';
+      label.textContent = 'Dunkel';
+    }
+  }
+
+  // init state
+  document.getElementById('toggleTrack').classList.add('active');
+  document.getElementById('toggleThumb').textContent = '🌙';
+
+  // --- Formatter Logic ---
+  const markdownInput = document.getElementById("markdownInput");
+  const linkedinOutput = document.getElementById("linkedinOutput");
+  const copyButton = document.getElementById("copyButton");
+  const copyStatus = document.getElementById("copyStatus");
+
+  const boldMap = createUnicodeMap({
+    upper: 0x1d400,
+    lower: 0x1d41a,
+    digits: 0x1d7ce,
+  });
+  const italicMap = createUnicodeMap({
+    upper: 0x1d434,
+    lower: 0x1d44e,
+  });
+  const boldItalicMap = createUnicodeMap({
+    upper: 0x1d468,
+    lower: 0x1d482,
+    digits: 0x1d7ce,
+  });
+
+  const sample = `## Beispiel\n\n**Fett** und *kursiv* funktionieren auf LinkedIn durch Unicode-Zeichen.\n\n- Listen bleiben als Text erhalten.\n- Emojis bleiben erhalten 🚀`;
+  markdownInput.value = sample;
+  updatePreview();
+
+  markdownInput.addEventListener("input", updatePreview);
+  copyButton.addEventListener("click", handleCopy);
+
+  function updatePreview() {
+    const formatted = convertMarkdownToLinkedIn(markdownInput.value);
+    linkedinOutput.textContent = formatted;
+    resetCopyStatus();
+  }
+
+  function handleCopy() {
+    const formatted = convertMarkdownToLinkedIn(markdownInput.value);
+    navigator.clipboard
+      .writeText(formatted)
+      .then(() => {
+        copyStatus.textContent = "Kopiert!";
+        copyStatus.style.color = "var(--teal)";
+        copyStatus.style.opacity = "1";
+        copyButton.classList.add("success");
+        copyButton.classList.remove("error");
+        setTimeout(resetCopyStatus, 2500);
+      })
+      .catch(() => {
+        copyStatus.textContent = "Fehler!";
+        copyStatus.style.color = "#ef4444";
+        copyStatus.style.opacity = "1";
+        copyButton.classList.add("error");
+        copyButton.classList.remove("success");
+        setTimeout(resetCopyStatus, 2500);
+      });
+  }
+
+  function resetCopyStatus() {
+      copyStatus.style.opacity = "0";
+      copyButton.classList.remove("success", "error");
+  }
+
+  function convertMarkdownToLinkedIn(text) {
+    const lines = text.replace(/\r\n?/g, "\n").split("\n");
+    const converted = lines.map((line) => {
+      let workingLine = line.replace(/^#{1,6}\s*/, "");
+      workingLine = workingLine.replace(/\*\*\*(.+?)\*\*\*/g, (_, content) => applyMap(content, boldItalicMap));
+      workingLine = workingLine.replace(/\*\*(.+?)\*\*/g, (_, content) => applyMap(content, boldMap));
+      workingLine = workingLine.replace(/\*(.+?)\*/g, (_, content) => applyMap(content, italicMap));
+      return workingLine;
+    });
+
+    return converted.join("\n");
+  }
+
+  function createUnicodeMap({ upper, lower, digits }) {
+    const map = new Map();
+
+    for (let index = 0; index < 26; index += 1) {
+      map.set(String.fromCharCode(65 + index), String.fromCodePoint(upper + index));
+      map.set(String.fromCharCode(97 + index), String.fromCodePoint(lower + index));
+    }
+
+    if (digits !== undefined) {
+      for (let index = 0; index < 10; index += 1) {
+        map.set(String.fromCharCode(48 + index), String.fromCodePoint(digits + index));
+      }
+    }
+
+    return map;
+  }
+
+  function applyMap(content, map) {
+    return Array.from(content)
+      .map((char) => map.get(char) ?? char)
+      .join("");
+  }
+</script>
 </body>
 </html>
