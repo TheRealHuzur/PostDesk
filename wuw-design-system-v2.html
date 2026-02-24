@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wissen & Werkzeug – UI Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     TOKENS — Dark Theme (default)
+  ═══════════════════════════════════════════ */
+  :root {
+    --teal:  #0e97ad;
+    --sky:   #0ea5e9;
+    --light: #b0cfe5;
+    --navy:  #2a314d;
+    --deep:  #0B162A;
+
+    /* semantic */
+    --bg:        #0B162A;
+    --bg-2:      #1a2235;
+    --bg-3:      #1e2c42;
+    --text:      #e8eef5;
+    --text-muted:#7a91ab;
+    --border:    rgba(176,207,229,0.12);
+    --glow:      rgba(14,151,173,0.18);
+    --accent:    var(--teal);
+    --accent-2:  var(--sky);
+    --input-bg:  #1e2c42;
+    --shadow:    0 4px 24px rgba(0,0,0,0.35);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+    --grid-color:rgba(14,151,173,0.035);
+  }
+
+  /* ═══════════════════════════════════════════
+     TOKENS — Light Theme
+  ═══════════════════════════════════════════ */
+  [data-theme="light"] {
+    --bg:        #f0f5fa;
+    --bg-2:      #ffffff;
+    --bg-3:      #e6eef6;
+    --text:      #1a2235;
+    --text-muted:#5a7490;
+    --border:    rgba(42,49,77,0.12);
+    --glow:      rgba(14,151,173,0.10);
+    --input-bg:  #f0f5fa;
+    --shadow:    0 4px 24px rgba(42,49,77,0.10);
+    --shadow-sm: 0 2px 8px rgba(42,49,77,0.08);
+    --grid-color:transparent;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+    transition: background-image 0.35s;
+  }
+
+  .page { position: relative; z-index: 1; }
+
+  /* ── transitions for theme switch ── */
+  .card, header, input, textarea, select, .dropzone,
+  .output-area, .table-wrap, .tabs, .tab, .alert,
+  label, .stat, .badge, .status-badge, footer {
+    transition: background 0.3s ease, border-color 0.3s ease,
+                color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* ══════════════════════════════════
+     HEADER
+  ══════════════════════════════════ */
+  header {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    max-width: 900px; margin: 0 auto;
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; box-shadow: 0 0 8px var(--teal); }
+    50%      { opacity:.5; box-shadow: 0 0 20px var(--teal); }
+  }
+
+  /* ── Theme Toggle ── */
+  .theme-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .theme-label {
+    font-size: 12px; color: var(--text-muted); font-weight: 500;
+    min-width: 32px;
+    transition: color 0.3s;
+  }
+  .toggle-track {
+    width: 44px; height: 24px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .toggle-track.active {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    border-color: var(--teal);
+  }
+  .toggle-thumb {
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute; top: 2px; left: 2px;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; line-height: 1;
+  }
+  .toggle-track.active .toggle-thumb {
+    transform: translateX(20px);
+  }
+
+  .badge {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(14,151,173,0.15);
+    border: 1px solid rgba(14,151,173,0.3);
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  /* ══════════════════════════════════
+     MAIN LAYOUT
+  ══════════════════════════════════ */
+  main {
+    max-width: 900px; margin: 0 auto; padding: 48px 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 52px; text-align: center;
+  }
+  .hero-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800; line-height: 1.1; color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p { color: var(--text-muted); max-width: 480px; margin: 0 auto; }
+
+  /* ── Section title ── */
+  .section-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.4s ease both;
+  }
+  .card:hover {
+    border-color: rgba(14,151,173,0.28);
+    box-shadow: 0 0 30px var(--glow), var(--shadow-sm);
+  }
+  .card:nth-child(2) { animation-delay: 0.08s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(14,151,173,0.15), rgba(14,165,233,0.08));
+    border: 1px solid rgba(14,151,173,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 12px;
+  }
+  .card h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .card p { color: var(--text-muted); font-size: 13.5px; }
+  .card-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 20px; border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    cursor: pointer; border: none;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--sky));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(14,151,173,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 24px rgba(14,151,173,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--teal); color: var(--teal);
+    background: rgba(14,151,173,0.06);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-muted); padding: 9px 14px;
+  }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* ── Drop Zone ── */
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 12px; padding: 40px 24px;
+    text-align: center; cursor: pointer;
+    background: color-mix(in srgb, var(--teal) 3%, transparent);
+    transition: all 0.25s;
+  }
+  .dropzone:hover {
+    border-color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 7%, transparent);
+  }
+  .dropzone-icon { font-size: 32px; margin-bottom: 12px; }
+  .dropzone h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+  }
+  .dropzone p { color: var(--text-muted); font-size: 12.5px; }
+
+  /* ── Form elements ── */
+  .form-group { margin-bottom: 16px; }
+  label {
+    display: block; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  input[type=text], textarea, select {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+  }
+  input[type=text]:focus, textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14,151,173,0.12);
+  }
+  textarea { resize: vertical; min-height: 100px; }
+  select { cursor: pointer; }
+
+  /* ── Table ── */
+  .table-wrap {
+    overflow-x: auto; border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    padding: 11px 16px;
+    background: var(--bg-3);
+    color: var(--text-muted);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: left; border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: color-mix(in srgb, var(--teal) 4%, transparent); }
+  tbody td { padding: 11px 16px; color: var(--text); vertical-align: middle; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .status-ok {
+    background: rgba(14,151,173,0.12); color: var(--teal);
+    border: 1px solid rgba(14,151,173,0.22);
+  }
+  .status-wait {
+    background: color-mix(in srgb, var(--light) 12%, transparent);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── Output area ── */
+  .output-area {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Fira Mono', 'Courier New', monospace;
+    font-size: 12.5px; color: var(--text);
+    padding: 20px; min-height: 130px; line-height: 1.7;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .output-toolbar {
+    display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 10px;
+  }
+
+  /* ── Stats ── */
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .stat {
+    background: var(--bg-3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 14px;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .stat span { color: var(--sky); font-weight: 600; }
+
+  /* ── Progress ── */
+  .progress-bar {
+    height: 4px; background: var(--bg-3);
+    border-radius: 4px; overflow: hidden; margin-top: 12px;
+    transition: background 0.3s;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--sky));
+    border-radius: 4px; width: 65%;
+    animation: fillBar 1.5s ease-out forwards;
+  }
+  @keyframes fillBar { from { width: 0; } }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--bg-3); padding: 4px; border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .tab {
+    flex: 1; padding: 8px 16px; border-radius: 7px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: none; background: transparent; color: var(--text-muted);
+    font-family: 'Inter', sans-serif; text-align: center;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: var(--bg-2); color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* ── Alerts ── */
+  .alert {
+    padding: 12px 16px; border-radius: 8px;
+    display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px;
+  }
+  .alert-info {
+    background: rgba(14,165,233,0.08);
+    border: 1px solid rgba(14,165,233,0.2); color: var(--sky);
+  }
+  .alert-success {
+    background: rgba(14,151,173,0.08);
+    border: 1px solid rgba(14,151,173,0.22); color: var(--teal);
+  }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 620px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ── Swatches ── */
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch { width: 64px; text-align: center; }
+  .swatch-color {
+    width: 64px; height: 44px; border-radius: 8px; margin-bottom: 6px;
+    border: 1px solid var(--border);
+  }
+  .swatch label {
+    text-transform: none; letter-spacing: 0;
+    font-size: 10px; color: var(--text-muted); display: block;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 24px; text-align: center;
+    font-size: 12px; color: var(--text-muted);
+    max-width: 900px; margin: 0 auto;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── Theme comparison banner ── */
+  .theme-banner {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .theme-banner p { color: var(--text-muted); font-size: 13.5px; }
+  .theme-banner strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      Wissen &amp; Werkzeug
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="badge">Werkzeuge</div>
+      <!-- Theme Toggle -->
+      <div class="theme-toggle" onclick="toggleTheme()" title="Theme wechseln">
+        <span class="theme-label" id="themeLabel">Hell</span>
+        <div class="toggle-track" id="toggleTrack">
+          <div class="toggle-thumb" id="toggleThumb">☀️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">Design System · Hell &amp; Dunkel</div>
+    <h1>Ein Look für<br><span>alle Werkzeuge</span></h1>
+    <p>Konsistent, professionell und passend zu deiner CI — mit integriertem Hell/Dunkel-Schalter.</p>
+  </div>
+
+  <!-- Theme Banner -->
+  <div class="theme-banner">
+    <p>Du siehst gerade: <strong id="currentThemeLabel">Dunkles Theme</strong>. Wechsle oben rechts, um beide zu vergleichen.</p>
+    <button class="btn btn-secondary" style="font-size:12px; padding:7px 16px;" onclick="toggleTheme()">
+      Theme wechseln →
+    </button>
+  </div>
+
+  <!-- ── TOOL: Markdown Organizer ── -->
+  <div class="section-title">Werkzeug-Ansicht</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-icon">🗂️</div>
+      </div>
+      <div class="badge">Beta</div>
+    </div>
+    <h2>Markdown Organizer</h2>
+    <p>Mehrere Markdown-Dateien lokal im Browser zu einer LLM-freundlichen Datei kombinieren.</p>
+
+    <div class="tabs" style="margin-top:20px;">
+      <button class="tab active">Dateien</button>
+      <button class="tab">Einstellungen</button>
+      <button class="tab">Hilfe</button>
+    </div>
+
+    <div class="dropzone">
+      <div class="dropzone-icon">📄</div>
+      <h3>Markdown-Dateien ablegen</h3>
+      <p>Unterstützt .md und .markdown · Drag &amp; Drop oder</p>
+      <div class="btn-row" style="justify-content:center; margin-top:14px;">
+        <button class="btn btn-primary">Dateien wählen</button>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Dateiname</th>
+            <th>Größe</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>prozesse_einleitung.md</td>
+            <td>4.2 KB</td>
+            <td><span class="status-badge status-ok">✓ Bereit</span></td>
+          </tr>
+          <tr>
+            <td>wissensmanagement.md</td>
+            <td>8.7 KB</td>
+            <td><span class="status-badge status-ok">✓ Bereit</span></td>
+          </tr>
+          <tr>
+            <td>ki_grundlagen.md</td>
+            <td>2.1 KB</td>
+            <td><span class="status-badge status-wait">⏳ Wartend</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="stats">
+        <div class="stat">Dateien: <span>3</span></div>
+        <div class="stat">Zeichen: <span>24.847</span></div>
+        <div class="stat">Tokens (ca.): <span>6.200</span></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn btn-primary">⚡ Generieren</button>
+      <button class="btn btn-secondary">📋 Kopieren</button>
+      <button class="btn btn-secondary">⬇ Download</button>
+      <button class="btn btn-ghost">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- ── TOOL: LinkedIn Formatter ── -->
+  <div class="section-title" style="margin-top:40px;">Weitere Beispiel-Ansicht</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-icon">✍️</div>
+      <h2>Eingabe</h2>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Roher Text</label>
+        <textarea placeholder="Deinen LinkedIn-Post hier einfügen...&#10;&#10;Zum Beispiel einen langen Fließtext über ein Thema aus dem Bereich Verwaltung, KI oder Prozessmanagement."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Format-Stil</label>
+        <select>
+          <option>Strukturiert (Absätze + Emojis)</option>
+          <option>Minimal (klar, sachlich)</option>
+          <option>Story (Narrativ)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" style="width:100%;">Formatieren →</button>
+    </div>
+
+    <div class="card" style="display:flex; flex-direction:column;">
+      <div class="card-icon">📤</div>
+      <h2>Output</h2>
+      <div class="output-toolbar">
+        <button class="btn btn-secondary" style="padding:5px 12px; font-size:12px;">Kopieren</button>
+      </div>
+      <div class="output-area" style="flex:1;">
+        🔍 <strong>Wissensmanagement in der Verwaltung</strong><br><br>
+        Viele Organisationen haben enormes Wissen – aber kaum jemand findet es.<br><br>
+        Das Problem ist nicht das Wissen selbst.<br>
+        Das Problem ist die Struktur.<br><br>
+        💡 Mit einem klaren System ändert sich das.
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div style="margin-top:24px; display:flex; flex-direction:column; gap:10px;">
+    <div class="alert alert-success">✓ Datei erfolgreich verarbeitet und bereit zum Download.</div>
+    <div class="alert alert-info">ℹ Alle Verarbeitungen laufen lokal in deinem Browser – keine Daten verlassen dein Gerät.</div>
+  </div>
+
+  <hr>
+
+  <!-- Color Palette -->
+  <div class="section-title">Farbpalette</div>
+  <div class="swatches">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2a314d;"></div>
+      <label>Navy<br>#2a314d</label>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0B162A;"></div>
+      <label>Deep<br>#0B162A</label>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0e97ad;"></div>
+      <label>Teal<br>#0e97ad</label>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#0ea5e9;"></div>
+      <label>Sky<br>#0ea5e9</label>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#b0cfe5;"></div>
+      <label>Light<br>#b0cfe5</label>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Typography -->
+  <div class="section-title">Typografie</div>
+  <div class="card">
+    <p style="font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">Inter · Headlines</p>
+    <div style="font-family:'Inter',sans-serif; font-size:32px; font-weight:800; letter-spacing:-0.02em; color:var(--text); line-height:1.1; margin-bottom:24px;">
+      Verstehen. Gestalten.<br>Umsetzen.
+    </div>
+    <p style="font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">Inter · Body &amp; UI</p>
+    <p style="color:var(--text-muted);">Klare, lesbare Schrift für alle Beschreibungen, Labels und Interface-Texte. Sachlich, modern, ohne Schnörkel.</p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://www.wissen-und-werkzeug.de">wissen-und-werkzeug.de</a> · Werkzeuge für den Arbeitsalltag
+</footer>
+
+</div>
+
+<script>
+  let isDark = true;
+
+  function toggleTheme() {
+    isDark = !isDark;
+    const html = document.documentElement;
+    const track = document.getElementById('toggleTrack');
+    const thumb = document.getElementById('toggleThumb');
+    const label = document.getElementById('themeLabel');
+    const banner = document.getElementById('currentThemeLabel');
+
+    if (isDark) {
+      html.setAttribute('data-theme', 'dark');
+      track.classList.add('active');
+      thumb.textContent = '🌙';
+      label.textContent = 'Hell';
+      banner.textContent = 'Dunkles Theme';
+    } else {
+      html.setAttribute('data-theme', 'light');
+      track.classList.remove('active');
+      thumb.textContent = '☀️';
+      label.textContent = 'Dunkel';
+      banner.textContent = 'Helles Theme';
+    }
+  }
+
+  // init state
+  document.getElementById('toggleTrack').classList.add('active');
+  document.getElementById('toggleThumb').textContent = '🌙';
+
+  // tab click
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      tab.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
