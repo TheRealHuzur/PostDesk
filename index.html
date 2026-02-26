@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PostDESK</title>
+  <title>PostDesk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
@@ -401,30 +401,34 @@
       transform: translateY(-1px);
     }
 
-    .btn-kopieren {
-      background: linear-gradient(135deg, #0e97ad, #0ea5e9);
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 13.5px;
-      padding: 9px 20px;
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
       border-radius: 8px;
-      border: none;
+      font-size: 12px;
+      font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(14, 151, 173, 0.3);
-      transition: all 0.2s ease;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
 
-    .btn-kopieren:hover {
-      box-shadow: 0 6px 24px rgba(14, 151, 173, 0.5);
-      transform: translateY(-1px);
+    .btn-secondary:hover {
+      border-color: #0e97ad;
+      color: #0e97ad;
+      background: rgba(14, 151, 173, 0.06);
     }
 
-    .btn-kopieren.success {
-      background: #0e97ad;
+    .btn-secondary.success {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(14, 151, 173, 0.1);
     }
 
-    .btn-kopieren.error {
-      background: #ef4444;
+    .btn-secondary.error {
+      border-color: #ef4444;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
     }
 
     /* ── Form elements ── */
@@ -526,7 +530,7 @@
       <div class="header-inner">
         <div class="logo">
           <div class="logo-dot"></div>
-          <span style="color:#ffffff">Post</span><span style="color:#0ea5e9">DESK</span>
+          Wissen &amp; Werkzeug
         </div>
         <div style="display:flex; align-items:center; gap:16px;">
           <div class="badge">Formatter</div>
@@ -544,40 +548,41 @@
     <main>
 
       <!-- HERO -->
-      <div class="hero-label"><span style="color:#ffffff">Post</span><span style="color:#0ea5e9">DESK</span></div>
-      <h1>Markdown einfügen<br>und <span>LinkedIn-Darstellung kopieren</span></h1>
-  </div>
-
-  <div class="grid-2">
-    <!-- INPUT CARD -->
-    <div class="card">
-      <div class="card-icon">✍️</div>
-      <h2>Eingabe</h2>
-      <div class="form-group" style="margin-top:12px;">
-        <label for="markdownInput">Roher Text (Markdown)</label>
-        <textarea id="markdownInput"
-          placeholder="Deinen Markdown-Text hier einfügen...&#10;&#10;Zum Beispiel mit **fettem** Text und *kursiven* Highlights."></textarea>
+      <div class="hero">
+        <div class="hero-label">PostDesk</div>
+        <h1>Markdown einfügen<br>und <span>LinkedIn-Darstellung kopieren</span></h1>
       </div>
-    </div>
 
-    <!-- OUTPUT CARD -->
-    <div class="card">
-      <div class="card-icon">📤</div>
-      <h2>Output</h2>
-      <div class="output-toolbar">
-        <span id="copyStatus"
-          style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
-        <button id="copyButton" class="btn btn-kopieren">Kopieren</button>
+      <div class="grid-2">
+        <!-- INPUT CARD -->
+        <div class="card">
+          <div class="card-icon">✍️</div>
+          <h2>Eingabe</h2>
+          <div class="form-group" style="margin-top:12px;">
+            <label for="markdownInput">Roher Text (Markdown)</label>
+            <textarea id="markdownInput"
+              placeholder="Deinen Markdown-Text hier einfügen...&#10;&#10;Zum Beispiel mit **fettem** Text und *kursiven* Highlights."></textarea>
+          </div>
+        </div>
+
+        <!-- OUTPUT CARD -->
+        <div class="card">
+          <div class="card-icon">📤</div>
+          <h2>Output</h2>
+          <div class="output-toolbar">
+            <span id="copyStatus"
+              style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
+            <button id="copyButton" class="btn btn-secondary">Kopieren</button>
+          </div>
+          <div id="linkedinOutput" class="output-area"></div>
+        </div>
       </div>
-      <div id="linkedinOutput" class="output-area"></div>
-    </div>
-  </div>
 
-  </main>
+    </main>
 
-  <footer>
-    <span style="color:#ffffff">Post</span><span style="color:#0ea5e9">DESK</span> · Design by Wissen &amp; Werkzeug
-  </footer>
+    <footer>
+      PostDesk · Design by Wissen &amp; Werkzeug
+    </footer>
 
   </div>
 
