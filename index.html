@@ -390,30 +390,32 @@
       text-decoration: none;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #0e97ad, #0ea5e9);
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 13.5px;
-      padding: 9px 20px;
+    .btn-kopieren {
+      background: transparent;
+      border: 1px solid rgba(14, 151, 173, 0.4);
+      color: #0e97ad;
+      padding: 6px 16px;
       border-radius: 8px;
-      border: none;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(14, 151, 173, 0.3);
       transition: all 0.2s ease;
     }
 
-    .btn-primary:hover {
-      box-shadow: 0 6px 24px rgba(14, 151, 173, 0.5);
-      transform: translateY(-1px);
+    .btn-kopieren:hover {
+      background: rgba(14, 151, 173, 0.08);
+      border: 1px solid #0e97ad;
     }
 
-    .btn-primary.success {
-      background: #0e97ad;
+    .btn-kopieren.success {
+      background: rgba(14, 151, 173, 0.15);
+      border-color: #0e97ad;
     }
 
-    .btn-primary.error {
-      background: #ef4444;
+    .btn-kopieren.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+      color: #ef4444;
     }
 
     .app-title {
@@ -571,7 +573,7 @@
 
     <main>
 
-      <div class="app-title">POSTDESK</div>
+      <div class="app-title">Post<span style="color:#0ea5e9">DESK</span></div>
 
       <!-- HERO -->
       <div class="hero">
@@ -597,7 +599,7 @@
           <div class="output-toolbar">
             <span id="copyStatus"
               style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
-            <button id="copyButton" class="btn btn-primary">Kopieren</button>
+            <button id="copyButton" class="btn btn-kopieren">Kopieren</button>
           </div>
           <div id="linkedinOutput" class="output-area"></div>
         </div>
@@ -733,7 +735,7 @@
     function applyMap(content, map) {
       return Array.from(content)
         .map((char) => map.get(char) ?? cr)
- .join("");
+        .join("");
     }
   </script>
 </body>
