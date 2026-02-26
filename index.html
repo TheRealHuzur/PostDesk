@@ -391,9 +391,16 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--teal), var(--sky));
-      color: #fff;
+      background: linear-gradient(135deg, #0e97ad, #0ea5e9);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 13.5px;
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
       box-shadow: 0 4px 16px rgba(14, 151, 173, 0.3);
+      transition: all 0.2s ease;
     }
 
     .btn-primary:hover {
@@ -401,22 +408,39 @@
       transform: translateY(-1px);
     }
 
+    .btn-primary.success {
+      background: #0e97ad;
+    }
+
+    .btn-primary.error {
+      background: #ef4444;
+    }
+
+    .app-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #0e97ad;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
     .btn-secondary {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 8px;
+      border: 1px solid rgba(14, 151, 173, 0.4);
+      color: #0e97ad;
+      padding: 5px 12px;
+      border-radius: 6px;
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      transition: all 0.2s ease;
     }
 
     .btn-secondary:hover {
-      border-color: #0e97ad;
-      color: #0e97ad;
-      background: rgba(14, 151, 173, 0.06);
+      background: rgba(14, 151, 173, 0.08);
+      border: 1px solid #0e97ad;
     }
 
     .btn-secondary.success {
@@ -547,9 +571,10 @@
 
     <main>
 
+      <div class="app-title">POSTDESK</div>
+
       <!-- HERO -->
       <div class="hero">
-        <div class="hero-label">PostDesk</div>
         <h1>Markdown einfügen<br>und <span>LinkedIn-Darstellung kopieren</span></h1>
       </div>
 
@@ -572,7 +597,7 @@
           <div class="output-toolbar">
             <span id="copyStatus"
               style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
-            <button id="copyButton" class="btn btn-secondary">Kopieren</button>
+            <button id="copyButton" class="btn btn-primary">Kopieren</button>
           </div>
           <div id="linkedinOutput" class="output-area"></div>
         </div>
@@ -707,8 +732,8 @@
 
     function applyMap(content, map) {
       return Array.from(content)
-        .map((char) => map.get(char) ?? char)
-        .join("");
+        .map((char) => map.get(char) ?? cr)
+ .join("");
     }
   </script>
 </body>
