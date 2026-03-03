@@ -19,17 +19,17 @@
       --navy: #2a314d;
       --deep: #0B162A;
 
-      /* semantic */
-      --bg: #080f1e;
+      /* semantic (Dark Theme) */
+      --bg: #020617;
       --bg-2: #1a2235;
-      --bg-3: #242f47;
+      --bg-3: #1e2c42;
       --text: #e8eef5;
       --text-muted: #7a91ab;
       --border: rgba(176, 207, 229, 0.12);
       --glow: rgba(14, 151, 173, 0.18);
       --accent: var(--teal);
       --accent-2: var(--sky);
-      --input-bg: var(--bg-3);
+      --input-bg: #1e2c42;
       --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
       --grid-color: rgba(14, 151, 173, 0.035);
@@ -130,7 +130,7 @@
     }
 
     .header-inner {
-      max-width: 1080px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 0 24px;
       display: flex;
@@ -141,38 +141,12 @@
 
     .logo {
       font-family: 'Inter', sans-serif;
-      font-size: 13px;
+      font-size: 20px;
       font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      letter-spacing: normal;
       color: var(--text);
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .logo-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 8px var(--teal);
-      animation: pulse 2.5s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-        box-shadow: 0 0 8px var(--teal);
-      }
-
-      50% {
-        opacity: .5;
-        box-shadow: 0 0 20px var(--teal);
-      }
     }
 
     /* ── Theme Toggle ── */
@@ -245,7 +219,7 @@
      MAIN LAYOUT
   ══════════════════════════════════ */
     main {
-      max-width: 1080px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 48px 24px 80px;
       width: 100%;
@@ -307,12 +281,12 @@
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
 
-    .card:hover {
+    .card.card-clickable:hover {
       border-color: rgba(14, 151, 173, 0.28);
       box-shadow: 0 0 30px var(--glow), var(--shadow-sm);
     }
 
-    [data-theme="dark"] .card:hover {
+    [data-theme="dark"] .card.card-clickable:hover {
       box-shadow: 0 0 30px var(--glow), 0 4px 24px rgba(0, 0, 0, 0.4);
     }
 
@@ -390,58 +364,22 @@
       text-decoration: none;
     }
 
-    .btn-kopieren {
-      background: transparent;
-      border: 1px solid rgba(14, 151, 173, 0.4);
-      color: #0e97ad;
-      padding: 6px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-kopieren:hover {
-      background: rgba(14, 151, 173, 0.08);
-      border: 1px solid #0e97ad;
-    }
-
-    .btn-kopieren.success {
-      background: rgba(14, 151, 173, 0.15);
-      border-color: #0e97ad;
-    }
-
-    .btn-kopieren.error {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: #ef4444;
-      color: #ef4444;
-    }
-
-    .app-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: #ffffff;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
     .btn-secondary {
       background: transparent;
-      border: 1px solid rgba(14, 151, 173, 0.4);
-      color: #0e97ad;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .btn-secondary:hover {
-      background: rgba(14, 151, 173, 0.08);
-      border: 1px solid #0e97ad;
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(14, 151, 173, 0.06);
     }
 
     .btn-secondary.success {
@@ -553,10 +491,7 @@
     <!-- HEADER -->
     <header>
       <div class="header-inner">
-        <div class="logo">
-          <div class="logo-dot"></div>
-          Wissen &amp; Werkzeug
-        </div>
+        <div class="logo">Post<span style="color:var(--sky)">DESK</span></div>
         <div style="display:flex; align-items:center; gap:16px;">
           <div class="badge">Formatter</div>
           <!-- Theme Toggle -->
@@ -572,10 +507,12 @@
 
     <main>
 
-      <div class="app-title">Post<span style="color:#0ea5e9">DESK</span></div>
-
       <!-- HERO -->
       <div class="hero">
+        <div style="font-size: 19px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 8px;">
+          <span style="color:var(--text)">Post</span><span style="color:var(--sky)">DESK</span>
+        </div>
+        <div class="hero-label">Design System · Hell &amp; Dunkel</div>
         <h1>Markdown einfügen<br>und <span>LinkedIn-Darstellung kopieren</span></h1>
       </div>
 
@@ -598,7 +535,8 @@
           <div class="output-toolbar">
             <span id="copyStatus"
               style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
-            <button id="copyButton" class="btn btn-kopieren">Kopieren</button>
+            <button id="copyButton" class="btn btn-secondary"
+              style="padding:5px 12px; font-size:12px;">Kopieren</button>
           </div>
           <div id="linkedinOutput" class="output-area"></div>
         </div>
@@ -607,7 +545,8 @@
     </main>
 
     <footer>
-      PostDesk · Design by Wissen &amp; Werkzeug
+      <a href="https://www.wissen-und-werkzeug.de"
+        style="color:var(--teal); text-decoration:none;">wissen-und-werkzeug.de</a> · Werkzeuge für den Arbeitsalltag
     </footer>
 
   </div>
