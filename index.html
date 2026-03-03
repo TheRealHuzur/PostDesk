@@ -647,18 +647,18 @@
     const copyStatus = document.getElementById("copyStatus");
 
     const boldMap = createUnicodeMap({
-      upper: 0x1d400,
-      lower: 0x1d41a,
-      digits: 0x1d7ce,
+      upper: 0x1d5d4,
+      lower: 0x1d5ee,
+      digits: 0x1d7ec,
     });
     const italicMap = createUnicodeMap({
-      upper: 0x1d434,
-      lower: 0x1d44e,
+      upper: 0x1d608,
+      lower: 0x1d622,
     });
     const boldItalicMap = createUnicodeMap({
-      upper: 0x1d468,
-      lower: 0x1d482,
-      digits: 0x1d7ce,
+      upper: 0x1d63c,
+      lower: 0x1d656,
+      digits: 0x1d7ec,
     });
 
     const sample = `## Beispiel\n\n**Fett** und *kursiv* funktionieren auf LinkedIn durch Unicode-Zeichen.\n\n- Listen bleiben als Text erhalten.\n- Emojis bleiben erhalten 🚀`;
@@ -676,24 +676,46 @@
 
     function handleCopy() {
       const formatted = convertMarkdownToLinkedIn(markdownInput.value);
-      navigator.clipboard
-        .writeText(formatted)
-        .then(() => {
-          copyStatus.textContent = "Kopiert!";
-          copyStatus.style.color = "var(--teal)";
-          copyStatus.style.opacity = "1";
-          copyButton.classList.add("success");
-          copyButton.classList.remove("error");
-          setTimeout(resetCopyStatus, 2500);
-        })
-        .catch(() => {
-          copyStatus.textContent = "Fehler!";
-          copyStatus.style.color = "#ef4444";
-          copyStatus.style.opacity = "1";
-          copyButton.classList.add("error");
-          copyButton.classList.remove("success");
-          setTimeout(resetCopyStatus, 2500);
-        });
+
+      const successCb = () => {
+        copyStatus.textContent = "Kopiert!";
+        copyStatus.style.color = "var(--teal)";
+        copyStatus.style.opacity = "1";
+        copyButton.classList.add("success");
+        copyButton.classList.remove("error");
+        setTimeout(resetCopyStatus, 2500);
+      };
+
+      const errorCb = () => {
+        copyStatus.textContent = "Fehler!";
+        copyStatus.style.color = "#ef4444";
+        copyStatus.style.opacity = "1";
+        copyButton.classList.add("error");
+        copyButton.classList.remove("success");
+        setTimeout(resetCopyStatus, 2500);
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(formatted).then(successCb).catch(errorCb);
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        try {
+          const textArea = document.createElement("textarea");
+          textArea.value = formatted;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          document.execCommand("copy");
+          textArea.remove();
+          successCb();
+        } catch (error) {
+          console.error("Fallback copy failed", error);
+          errorCb();
+        }
+      }
     }
 
     function resetCopyStatus() {
@@ -705,9 +727,16 @@
       const lines = text.replace(/\r\n?/g, "\n").split("\n");
       const converted = lines.map((line) => {
         let workingLine = line.replace(/^#{1,6}\s*/, "");
+
+        // Handle blockquotes
+        workingLine = workingLine.replace(/^>\s*/, "▎ ");
+
         workingLine = workingLine.replace(/\*\*\*(.+?)\*\*\*/g, (_, content) => applyMap(content, boldItalicMap));
+        workingLine = workingLine.replace(/___(.+?)___/g, (_, content) => applyMap(content, boldItalicMap));
         workingLine = workingLine.replace(/\*\*(.+?)\*\*/g, (_, content) => applyMap(content, boldMap));
+        workingLine = workingLine.replace(/__(.+?)__/g, (_, content) => applyMap(content, boldMap));
         workingLine = workingLine.replace(/\*(.+?)\*/g, (_, content) => applyMap(content, italicMap));
+        workingLine = workingLine.replace(/_(.+?)_/g, (_, content) => applyMap(content, italicMap));
         return workingLine;
       });
 
@@ -733,7 +762,7 @@
 
     function applyMap(content, map) {
       return Array.from(content)
-        .map((char) => map.get(char) ?? cr)
+        .map((char) => map.get(char) ?? char)
         .join("");
     }
   </script>
