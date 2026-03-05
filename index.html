@@ -567,12 +567,12 @@
         <div class="card">
           <div class="card-icon">✍️</div>
           <h2>Eingabe</h2>
-          <div class="output-toolbar">
+          <div class="output-toolbar" style="margin-top: 12px; margin-bottom: 8px; justify-content: space-between;">
+            <label for="markdownInput" style="margin-bottom: 0;">Roher Text (Markdown)</label>
             <button id="clearButton" class="btn btn-secondary"
               style="padding:5px 12px; font-size:12px;">Löschen</button>
           </div>
           <div class="form-group" style="margin-top:0;">
-            <label for="markdownInput">Roher Text (Markdown)</label>
             <textarea id="markdownInput"
               placeholder="Deinen Markdown-Text hier einfügen...&#10;&#10;Zum Beispiel mit **fettem** Text und *kursiven* Highlights."></textarea>
           </div>
@@ -582,7 +582,7 @@
         <div class="card">
           <div class="card-icon">📤</div>
           <h2>Output</h2>
-          <div class="output-toolbar">
+          <div class="output-toolbar" style="margin-top: 12px; margin-bottom: 8px;">
             <span id="copyStatus"
               style="font-size: 12px; font-weight: 500; margin-right: 8px; transition: color 0.3s; opacity: 0;"></span>
             <button id="copyButton" class="btn btn-secondary"
