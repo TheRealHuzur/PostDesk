@@ -567,7 +567,11 @@
         <div class="card">
           <div class="card-icon">✍️</div>
           <h2>Eingabe</h2>
-          <div class="form-group" style="margin-top:12px;">
+          <div class="output-toolbar">
+            <button id="clearButton" class="btn btn-secondary"
+              style="padding:5px 12px; font-size:12px;">Löschen</button>
+          </div>
+          <div class="form-group" style="margin-top:0;">
             <label for="markdownInput">Roher Text (Markdown)</label>
             <textarea id="markdownInput"
               placeholder="Deinen Markdown-Text hier einfügen...&#10;&#10;Zum Beispiel mit **fettem** Text und *kursiven* Highlights."></textarea>
@@ -638,6 +642,7 @@
     const linkedinOutput = document.getElementById("linkedinOutput");
     const copyButton = document.getElementById("copyButton");
     const copyStatus = document.getElementById("copyStatus");
+    const clearButton = document.getElementById("clearButton");
 
     const boldMap = createUnicodeMap({
       upper: 0x1d5d4,
@@ -660,6 +665,10 @@
 
     markdownInput.addEventListener("input", updatePreview);
     copyButton.addEventListener("click", handleCopy);
+    clearButton.addEventListener("click", () => {
+      markdownInput.value = "";
+      updatePreview();
+    });
 
     function updatePreview() {
       const formatted = convertMarkdownToLinkedIn(markdownInput.value);
