@@ -541,7 +541,15 @@
     <!-- HEADER -->
     <header>
       <div class="header-inner">
-        <div class="logo">Post<span style="color:var(--sky)">DESK</span></div>
+        <div class="logo">
+          <a href="https://wissen-und-werkzeug.de"
+            style="color:var(--text); text-decoration:none; transition:opacity 0.2s;"
+            onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+            DESK<span style="color:var(--sky)">suite</span>
+          </a>
+          <span style="color:#64748b; margin: 0 8px; font-weight: normal;">›</span>
+          <span style="color:var(--text);">Post<span style="color:var(--sky)">DESK</span></span>
+        </div>
         <div style="display:flex; align-items:center; gap:16px;">
           <!-- Theme Toggle -->
           <div class="theme-toggle" onclick="toggleTheme()" title="Theme wechseln">
